@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "837696759891",
+    "project_id": "dailycatch-1db77",
+    "storage_bucket": "dailycatch-1db77.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837696759891:android:d560fc1b235f3a16f3bea6",
+        "android_client_info": {
+          "package_name": "com.company.dailycatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeyJNBsOWHojx5UKYM6cY8C1cYkw1EA8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837696759891:android:ea2f7c8aa6d8e274f3bea6",
+        "android_client_info": {
+          "package_name": "com.dailycatch.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeyJNBsOWHojx5UKYM6cY8C1cYkw1EA8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837696759891:android:bf04a8484fb62882f3bea6",
+        "android_client_info": {
+          "package_name": "com.example.dailycatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeyJNBsOWHojx5UKYM6cY8C1cYkw1EA8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
