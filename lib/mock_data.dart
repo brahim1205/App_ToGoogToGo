@@ -62,9 +62,9 @@ final List<Basket> mockBaskets = [
     pickupTime: DateTime.now().add(Duration(hours: 4)),
     availableQuantity: 4,
     images: [
-      'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop'
+      'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1551782450?w=400&h=300&fit=crop'
     ],
     category: 'Bread & pastries',
   ),
@@ -94,7 +94,7 @@ final List<Basket> mockBaskets = [
     pickupTime: DateTime.now().add(Duration(hours: 6)),
     availableQuantity: 3,
     images: [
-      'https://images.unsplash.com/photo-1551782450-a30595b8332e?w=400&h=300&fit=crop',
+      'https://picsum.photos/400/300?random=1',
       'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop',
       'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop'
     ],

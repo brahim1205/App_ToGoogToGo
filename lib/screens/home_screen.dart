@@ -4,6 +4,7 @@ import 'package:dailycatch/mock_data.dart';
 import 'package:dailycatch/models/basket.dart';
 import 'package:dailycatch/models/store.dart';
 import 'package:dailycatch/screens/basket_detail_screen.dart';
+import 'package:dailycatch/services/location_service.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -16,6 +17,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   String selectedFilter = 'All';
   int _bottomNavIndex = 0; // Discover selected
+
+  LocationService _locationService = LocationService();
+  String _currentLocation = 'Localisation inconnue';
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +42,18 @@ class _HomeScreenState extends State<HomeScreen> {
               Icons.location_on,
               color: Colors.white,
             ),
-            onPressed: () {
-              // TODO: Implement location change
+            onPressed: () async {
+              try {
+                final position = await _locationService.getCurrentPosition();
+                setState(() {
+                  _currentLocation =
+                      'Lat: \${position.latitude.toStringAsFixed(4)}, Lon: \${position.longitude.toStringAsFixed(4)}';
+                });
+              } catch (e) {
+                setState(() {
+                  _currentLocation = 'Localisation non disponible';
+                });
+              }
             },
           ),
           IconButton(
@@ -122,8 +136,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Current location bar
             GestureDetector(
-              onTap: () {
-                // TODO: Implement location change
+              onTap: () async {
+                try {
+                  final position = await _locationService.getCurrentPosition();
+                  setState(() {
+                    _currentLocation =
+                        'Lat: \${position.latitude.toStringAsFixed(4)}, Lon: \${position.longitude.toStringAsFixed(4)}';
+                  });
+                } catch (e) {
+                  setState(() {
+                    _currentLocation = 'Localisation non disponible';
+                  });
+                }
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 16),
@@ -137,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(Icons.location_on, color: Color(0xFF00A082)),
                     SizedBox(width: 8),
                     Text(
-                      'Current location',
+                      'Your location',
                       style: TextStyle(
                         color: Color(0xFF00A082),
                         fontWeight: FontWeight.w500,
@@ -145,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Spacer(),
                     Text(
-                      'London',
+                      _currentLocation,
                       style: TextStyle(
                         color: Color(0xFF00A082),
                         fontWeight: FontWeight.bold,
@@ -275,17 +299,19 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         onTap: (index) {
-          setState(() {
-            _bottomNavIndex = index;
-          });
           if (index == 1) {
             // Browse
-            Navigator.pushNamed(context, '/browse');
+            Navigator.pushReplacementNamed(context, '/browse');
           } else if (index == 2) {
             // Delivery
-            Navigator.pushNamed(context, '/delivery');
+            Navigator.pushReplacementNamed(context, '/delivery');
+          } else if (index == 3) {
+            // Favourites
+            Navigator.pushReplacementNamed(context, '/favourites');
+          } else if (index == 4) {
+            // Profile
+            Navigator.pushReplacementNamed(context, '/profile');
           }
-          // TODO: Implement navigation to other screens
         },
       ),
     );
@@ -335,265 +361,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-    final basket = baskets[0];
-    final store = stores.firstWhere((s) => s.id == basket.storeId);
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
       height: 250,
-      child: Stack(
-        children: [
-          // Third shadow card (back)
-          Positioned(
-            left: 12,
-            top: 12,
-            child: Transform.rotate(
-              angle: -0.15,
-              child: Container(
-                width: MediaQuery.of(context).size.width - 56,
-                height: 220,
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(16),
-                  image: DecorationImage(
-                    image: NetworkImage(basket.images.length > 2
-                        ? basket.images[2]
-                        : basket.images.isNotEmpty
-                            ? basket.images[0]
-                            : 'https://via.placeholder.com/300'),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.3),
-                      BlendMode.darken,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Second shadow card (middle)
-          Positioned(
-            left: 8,
-            top: 8,
-            child: Transform.rotate(
-              angle: -0.08,
-              child: Container(
-                width: MediaQuery.of(context).size.width - 48,
-                height: 230,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(16),
-                  image: DecorationImage(
-                    image: NetworkImage(basket.images.length > 1
-                        ? basket.images[1]
-                        : basket.images.isNotEmpty
-                            ? basket.images[0]
-                            : 'https://via.placeholder.com/300'),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.2),
-                      BlendMode.darken,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // First shadow card (front)
-          Positioned(
-            left: 4,
-            top: 4,
-            child: Transform.rotate(
-              angle: -0.03,
-              child: Container(
-                width: MediaQuery.of(context).size.width - 40,
-                height: 240,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(16),
-                  image: DecorationImage(
-                    image: NetworkImage(basket.images.isNotEmpty
-                        ? basket.images[0]
-                        : 'https://via.placeholder.com/300'),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.1),
-                      BlendMode.darken,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Main card
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      BasketDetailScreen(basket: basket, store: store),
-                ),
-              );
-            },
-            child: Card(
-              elevation: 12,
-              shadowColor: Color(0xFF00D4AA).withOpacity(0.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    colors: [Colors.white, Color(0xFFE8F5E8)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Image with overlay
-                    Expanded(
-                      flex: 3,
-                      child: Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16)),
-                              image: DecorationImage(
-                                image: NetworkImage(basket.images.isNotEmpty
-                                    ? basket.images[0]
-                                    : 'https://via.placeholder.com/300'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          // Rating badge
-                          Positioned(
-                            top: 12,
-                            right: 12,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.star,
-                                      size: 16, color: Colors.amber),
-                                  SizedBox(width: 4),
-                                  Text('4.3',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // Store logo
-                          Positioned(
-                            bottom: 12,
-                            left: 12,
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border:
-                                    Border.all(color: Colors.white, width: 2),
-                              ),
-                              child:
-                                  Icon(Icons.store, color: Color(0xFF0A6A65)),
-                            ),
-                          ),
-                          // Favorite icon
-                          Positioned(
-                            bottom: 12,
-                            right: 12,
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.favorite_border,
-                                  color: Color(0xFFE57373)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Content
-                    Expanded(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                store.name,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF0A6A65),
-                                ),
-                              ),
-                              Text(
-                                basket.category,
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Collect today ${basket.pickupTime.hour}:${basket.pickupTime.minute.toString().padLeft(2, '0')}–${(basket.pickupTime.hour + 1) % 24}:${basket.pickupTime.minute.toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                    color: Colors.orange[600],
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                '2.1 km',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                              SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Text(
-                                    '${(basket.discountedPrice * 0.85).toStringAsFixed(2)}\$ ${basket.discountedPrice.toStringAsFixed(2)}€',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Color(0xFF0A6A65),
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '${basket.originalPrice}€',
-                                    style: TextStyle(
-                                      decoration: TextDecoration.lineThrough,
-                                      color: Colors.grey[500],
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: CardCarousel(baskets: baskets, stores: stores),
     );
   }
 
@@ -881,5 +653,76 @@ class _HomeScreenState extends State<HomeScreen> {
     return baskets
         .where((basket) => basket.category == selectedFilter)
         .toList();
+  }
+}
+
+class CardCarousel extends StatelessWidget {
+  final List<Basket> baskets;
+  final List<Store> stores;
+
+  const CardCarousel({required this.baskets, required this.stores, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: PageController(viewportFraction: 0.85),
+      itemCount: baskets.length,
+      itemBuilder: (context, index) {
+        final basket = baskets[index];
+        final store = stores.firstWhere((s) => s.id == basket.storeId,
+            orElse: () => stores.isNotEmpty
+                ? stores[0]
+                : Store(id: '', name: 'Unknown', address: '', category: '', images: [], rating: 0, latitude: 0, longitude: 0));
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Card(
+            elevation: 6,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(12)),
+                    child: Image.network(
+                      basket.images.isNotEmpty
+                          ? basket.images[0]
+                          : 'https://via.placeholder.com/400x200',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(basket.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF00A082))),
+                        SizedBox(height: 4),
+                        Text(store.name,
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 12)),
+                        SizedBox(height: 6),
+                        Text(
+                          '${basket.discountedPrice.toStringAsFixed(2)}€',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0A6A65)),
+                        ),
+                      ]),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

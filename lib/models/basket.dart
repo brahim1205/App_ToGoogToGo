@@ -29,11 +29,11 @@ class Basket {
       storeId: json['storeId'],
       name: json['name'],
       description: json['description'],
-      originalPrice: json['originalPrice'],
-      discountedPrice: json['discountedPrice'],
+      originalPrice: (json['originalPrice'] as num).toDouble(),
+      discountedPrice: (json['discountedPrice'] as num).toDouble(),
       pickupTime: DateTime.parse(json['pickupTime']),
       availableQuantity: json['availableQuantity'],
-      images: List<String>.from(json['images']),
+      images: List<String>.from(json['images'] ?? []),
       category: json['category'],
     );
   }
@@ -50,6 +50,38 @@ class Basket {
       'availableQuantity': availableQuantity,
       'images': images,
       'category': category,
+    };
+  }
+}
+
+class BasketItem {
+  final String productId;
+  final String productName;
+  final int quantity;
+  final double price;
+
+  BasketItem({
+    required this.productId,
+    required this.productName,
+    required this.quantity,
+    required this.price,
+  });
+
+  factory BasketItem.fromJson(Map<String, dynamic> json) {
+    return BasketItem(
+      productId: json['productId'],
+      productName: json['productName'],
+      quantity: json['quantity'],
+      price: (json['price'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'productName': productName,
+      'quantity': quantity,
+      'price': price,
     };
   }
 }
